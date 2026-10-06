@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: AquaSentinel Backend (Flask)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/app.py",
+      "cwd": "${workspaceFolder}/backend",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Node: Frontend Dev Server (Vite)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full-Stack (Backend + Frontend)",
+      "configurations": [
+        "Python: AquaSentinel Backend (Flask)",
+        "Node: Frontend Dev Server (Vite)"
+      ],
+      "stopAll": true
+    }
+  ]
+}
