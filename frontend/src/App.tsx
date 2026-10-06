@@ -61,8 +61,16 @@ const INITIAL_DEMO_STATE: ApiResponseState = {
 };
 
 import { ClientPondSimulator } from './utils/clientSimulator';
+import { LandingPage } from './components/LandingPage';
 
 export const App: React.FC = () => {
+  const [viewMode, setViewMode] = useState<'landing' | 'dashboard'>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash === '#dashboard' || window.location.search.includes('dashboard') ? 'dashboard' : 'landing';
+    }
+    return 'landing';
+  });
+
   const [data, setData] = useState<ApiResponseState>(INITIAL_DEMO_STATE);
   const [isConnected, setIsConnected] = useState<boolean>(true);
   const [isEdgeSimulator, setIsEdgeSimulator] = useState<boolean>(false);
@@ -71,6 +79,31 @@ export const App: React.FC = () => {
   const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(true);
   const prevStateRef = useRef<PondState>('Safe');
   const clientSimRef = useRef<ClientPondSimulator>(new ClientPondSimulator());
+
+  // Listen to hash change for back/forward navigation
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#dashboard') {
+        setViewMode('dashboard');
+      } else if (window.location.hash === '' || window.location.hash === '#home') {
+        setViewMode('landing');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const navigateToDashboard = () => {
+    setViewMode('dashboard');
+    window.location.hash = '#dashboard';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToLanding = () => {
+    setViewMode('landing');
+    window.location.hash = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Fetch telemetry state from backend or fallback to client simulator
   const fetchTelemetry = useCallback(async () => {
@@ -158,6 +191,10 @@ export const App: React.FC = () => {
   const latest = data.latest || INITIAL_DEMO_STATE.latest!;
   const t = UI_TRANSLATIONS[language];
 
+  if (viewMode === 'landing') {
+    return <LandingPage onEnterDashboard={navigateToDashboard} />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-[#060b13] text-slate-100 selection:bg-cyan-500 selection:text-slate-950 font-sans">
       {/* Top Navigation Bar */}
@@ -173,6 +210,7 @@ export const App: React.FC = () => {
         onToggleAudio={() => setIsAudioEnabled(!isAudioEnabled)}
         onManualRefresh={fetchTelemetry}
         onExportData={handleExportData}
+        onReturnToLanding={navigateToLanding}
       />
 
       {/* Main Command Dashboard */}

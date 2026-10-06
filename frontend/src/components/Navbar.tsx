@@ -28,6 +28,7 @@ interface NavbarProps {
   onToggleAudio: () => void;
   onManualRefresh: () => void;
   onExportData: () => void;
+  onReturnToLanding?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -42,6 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleAudio,
   onManualRefresh,
   onExportData,
+  onReturnToLanding,
 }) => {
   const t = UI_TRANSLATIONS[language];
 
@@ -67,27 +69,42 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Logo and Identity */}
         <div className="flex items-center gap-3.5">
-          <div className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20">
-            <div className="w-full h-full bg-[#081220] rounded-[10px] flex items-center justify-center">
-              <Activity className="w-6 h-6 text-cyan-400 animate-pulse" />
+          <button 
+            onClick={onReturnToLanding}
+            title="Return to 3D Landing Page"
+            className="flex items-center gap-3 text-left group cursor-pointer"
+          >
+            <div className="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-[#081220] rounded-[10px] flex items-center justify-center">
+                <Activity className="w-6 h-6 text-cyan-400 animate-pulse" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-[#060b13] animate-ping" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-[#060b13]" />
             </div>
-            <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-[#060b13] animate-ping" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-[#060b13]" />
-          </div>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-cyan-300 via-teal-200 to-white bg-clip-text text-transparent">
-                {t.systemTitle}
-              </span>
-              <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/30">
-                v2.4 IoT
-              </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-cyan-300 via-teal-200 to-white bg-clip-text text-transparent group-hover:from-white group-hover:to-cyan-200 transition-all">
+                  {t.systemTitle}
+                </span>
+                <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/30">
+                  v2.4 IoT
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 hidden sm:block">
+                {t.systemTagline}
+              </p>
             </div>
-            <p className="text-xs text-slate-400 hidden sm:block">
-              {t.systemTagline}
-            </p>
-          </div>
+          </button>
+
+          {onReturnToLanding && (
+            <button
+              onClick={onReturnToLanding}
+              className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-cyan-300 hover:border-cyan-500/50 hover:bg-slate-800 transition-all ml-1 hidden lg:flex items-center gap-1 cursor-pointer"
+            >
+              <span>← Landing</span>
+            </button>
+          )}
         </div>
 
         {/* Center: Pond Clock & Diurnal Phase */}
